@@ -9,7 +9,7 @@ categories:
 ---
 
 
-<blockquote class="blockquote-center">JS String对象之截取子串---substr/substring/slice对比</blockquote>
+<blockquote class="blockquote-center">JS String对象的三种截取子串操作---substr/substring/slice对比</blockquote>
 
 <!--more-->
 
