@@ -13,7 +13,7 @@ function run() {
         echo('Sorry, this script requires git');
         exit(1);
     } else {
-        echo("======================Auto Backup Begin===========================");
+        echo("======================自动备份开始===========================");
         cd('G:/blog'); //此处修改为Hexo根目录路径
         if (exec('git add --all').code !== 0) {
             echo('Error: Git add failed');
@@ -30,6 +30,6 @@ function run() {
             exit(1);
 
         }
-        echo("==================Auto Backup Complete============================")
+        echo("========================自动备份完成============================")
     }
 }
