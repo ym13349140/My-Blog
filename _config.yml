@@ -78,9 +78,10 @@ theme: next
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type: git
-  repository: https://github.com/ym13349140/ym13349140.github.io.git
-  branch: master
+  - type: git
+    repository: https://github.com/ym13349140/ym13349140.github.io.git
+    branch: master
+  - type: leancloud_counter_security_sync
 
 #七牛云存储设置
 qiniu:
@@ -104,3 +105,10 @@ qiniu:
     folder: css
   audio:
     folder: audio
+
+leancloud_counter_security:
+  enable_sync: true
+  app_id: 7owAQKr5eBLBFjMSbncDYUxm-gzGzoHsz
+  app_key: QjgsVpbrKMnDXq9iiaIAUAB1
+  username: maize_yang # Will be asked while deploying if is left blank
+  password: 310810woainiMIN
