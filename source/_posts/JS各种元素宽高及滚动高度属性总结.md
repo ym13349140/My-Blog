@@ -73,13 +73,13 @@ var y = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.docu
 ### 1、clientWidth/clientHeight---基本所有浏览器都支持
 > * **只读属性**，表示元素的内部宽度/高度（包括content、padding），不包括border、margin和滚动条。对于没有宽高的行内元素或者设置了 `display:inline` 的块级元素，该值都为0。
 
-![clientHeight](/images/clientHeight.png)
+{% qnimg JS/clientHeight.png title:clientHeight alt:clientHeight示意图 extend:?imageView2/2/w/600 %}
 
 ### 2、clientLeft/clientTop---基本所有浏览器都支持
 > * **只读属性**，表示元素内容区域的左上角相对于整个元素左上角的位置（包括边框），不包括顶部外边距或内边距，即元素的四个border-width。  
 > *注意：该值可能因为浏览器的自身属性会有差异，例如，FF和IE浏览器的按钮默认有3px大小的边框值，而Chrome的只有2px*
 
-![clientTop](/images/clientTop.png)
+{% qnimg JS/clientTop.png title:clientTop alt:clientTop示意图 extend:?imageView2/2/w/600 %}
 
 ### 3. offsetLeft/offsetTop---基本所有浏览器都支持
 > **只读属性**，对于块级元素，该属性表示当前元素左上角相对于最近的祖先定位元素（非static元素），也就是`element.offsetParent` 的左右/上下偏移值；对于行内元素，该属性表示元素第一个边界框的位置。
@@ -91,7 +91,7 @@ var y = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.docu
 ### 5. offsetWidth/offsetHeight---基本所有浏览器都支持
 > **只读属性**，表示当前元素的宽度/高度，包括content、padding、border和滚动条。
 
-![offsetHeight](/images/offsetHeight.png)
+{% qnimg JS/offsetHeight.png title:offsetHeight alt:offsetHeight示意图 extend:?imageView2/2/w/600 %}
 
 ### 6. scrollLeft/scrollTop---基本所有浏览器都支持
 > **可读写属性**，该属性元素滚动的像素大小，可手动设置为整数值。
@@ -104,7 +104,7 @@ var y = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.docu
 > * 没有隐藏部分（无滚动条）：等同于 `clientWidth和clientHeight`
 > * 有隐藏部分（有滚动条）：等同于 `scrollLeft + clientWidth/scrollTop + clientHeight`
 
-![scrollHeight](/images/scrollTop.png)
+{% qnimg JS/scrollTop.png title:scrollTop alt:scrollTop示意图 extend:?imageView2/2/w/600 %}
 
 ## 五、鼠标位置
 > 通过event.xxx来访问，表示与鼠标事件相关的一些属性。这里主要介绍`clientX/clientY、 offsetX/offsetY、 pageX/pageY、 screenX/screenY、 x/y` 十个属性。

@@ -37,7 +37,7 @@ categories:
 > 3. 定位元素按HTML中的出现的先后顺序堆叠
 
 > 不包含z-index属性的层叠关系示例图如下：
-![不包含`z-index`的层叠上下文示例图](/images/no-z-index.png)
+{% qnimg CSS/no-z-index.png title:no-z-index alt:不包含z-index的层叠上下文示例图 extend:?imageView2/2/w/600 %}
 
 > 其中，元素结构关系如下：
 > * Root
@@ -58,7 +58,7 @@ categories:
 > * 对于没有创建层叠上下文的元素，则默认按照父元素的层级显示
 
 > 包含z-index属性的层叠关系示例图如下：
-![包含`z-index`的层叠上下文示例图](/images/stacking-context.png)
+{% qnimg CSS/stacking-context.png title:z-index alt:包含z-index的层叠上下文示例图 extend:?imageView2/2/w/600 %}
 
 > 在这个例子中，每个被定位的元素都创建了独自的层叠上下文，因为他们被指定了定位属性和 z-index 属性。层叠上下文的层级如下：
 > * Root
@@ -77,7 +77,8 @@ categories:
 
 ### 1. 无嵌套
 > 在下面的例子中，DIV #2、DIV #3 和 DIV #4 这三个DIV属于同一个层叠上下文，分别设置了z-index为2,1,10，可以看出同一层叠上下文中，DIV按照z-index的值大小来确定展示顺序。
-![无嵌套的层叠上下文示例图](/images/no-qiantao-z-index.png)
+
+{% qnimg CSS/no-qiantao-z-index.png title:no-qiantao-z-index alt:无嵌套的层叠上下文示例图 extend:?imageView2/2/w/600 %}
 
 > 其中，HTML元素结构关系如下：
 > * DIV #1
@@ -87,7 +88,8 @@ categories:
 
 ### 2. 双层嵌套
 > 在下面的例子中，DIV #2 和 DIV #3 其实是属于同一个层叠上下文（根元素创建的层叠上下文），因为DIV #1 没有创建层叠上下文，所以创建了层叠上下文的子元素DIV #2 提升到了和DIV #1的兄弟元素同一个层叠上下文中，又由于DIV #2 的z-index为2，而DIV #3 的z-index为1，所以DIV #2 位于 DIV #3 上方， z-index的值决定了元素如何叠放。而DIV #2 (z-index: 2)在DIV #4 (z-index: 10)的上面，尽管DIV #2的z-index值小于DIV #4。原因在于它们不属于同一个层叠上下文。DIV #4处于DIV #3所创建的层叠上下文中，而整个DIV #3（包含其后代元素）是在DIV #2下面的。
-![二层嵌套的层叠上下文示例图](/images/qiantao-z-index.png)
+
+{% qnimg CSS/qiantao-z-index.png title:qiantao-z-index alt:二层嵌套的层叠上下文示例图 extend:?imageView2/2/w/600 %}
 
 > 其中，HTML元素结构关系如下：
 > * DIV #1
@@ -98,7 +100,7 @@ categories:
 ### 3. 三层嵌套
 > 下面的例子是一个用多个定位的div实现的三级菜单的例子，一级菜单仅仅是相对定位，所以没有创建层叠上下文。二级菜单相对其父元素（一级菜单）绝对定位，要使二级菜单在所有一级菜单的上方，则需要使用z-index。此时每个二级菜单都创建了一个层叠上下文，而三级菜单也处于其父元素（二级菜单）创建的上下文中。这样一来，在HTML结构中处于三级菜单后面的二级菜单，则会显示在三级菜单的上方，因为所有的二级菜单都使用了同样的z-index值，处于同一个层叠上下文中，所以后面的二级菜单会覆盖在前面的二级菜单之上（包括前面那个二级菜单的子元素之上）。
 
-![三层嵌套的层叠上下文示例图](/images/qiantao-3-z-index.png)
+{% qnimg CSS/qiantao-3-z-index.png title:qiantao-3-z-index alt:三层嵌套的层叠上下文示例图 extend:?imageView2/2/w/600 %}
 > 其中，层叠上下文结构如下：
 > * root stacking context
 >   * LEVEL #1
@@ -124,7 +126,8 @@ categories:
 > 5. 定位的后代元素按照它们在 HTML 中出现的先后顺序层叠
 
 > 包含float属性的层叠关系示例图如下：
-![包含float属性的层叠上下文示例图](/images/float-context.png)
+
+{% qnimg CSS/float-context.png title:float-context alt:包含float属性的层叠上下文示例图 extend:?imageView2/2/w/600 %}
 
 > * 在上面的例子中，DIV #4 的透明度是为 1 的，也没有设置position，所以没有层叠上下文，位于最底层，但是当给它设置一个透明度时，它就具有了层叠上下文，和其它四个元素处于同一个级别了，所以DIV #4 将会覆盖在1/2/3之上，在DIV #5 之下（后来居上）。
 > * DIV #2 和 DIV #3 都是float元素，是没有层叠上下文的，z-index值为auto，而DIV #1 和 DIV #5 虽然设置了position，创建了层叠上下文，但是他们的z-index值也是auto，所以跟两个float元素其实是在同一个级别上的，所以会按照HTML结构中的先后顺序显示，后来居上。
@@ -139,7 +142,7 @@ categories:
 
 
 ## 同一个层叠上下文中的层叠顺序
-![同一个层叠上下文中的层叠顺序示例图](/images/order.png)
+{% qnimg CSS/order.png title:order alt:同一个层叠上下文中的层叠顺序示例图 extend:?imageView2/2/w/600 %}
 
 -----
 ### 参考文档

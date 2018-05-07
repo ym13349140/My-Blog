@@ -30,8 +30,8 @@ categories:
 >   2. 第二步，执行_runMicroTask函数，执行Micro-TaskQueue当中的任务。
 
 > * 三者的结构图如下：
-![任务队列结构图](/images/queue.png)
 
+{% qnimg JS/queue.png title:queue alt:queue示意图 extend:?imageView2/2/w/600 %}
 
 ## 回调优先级对比
 > **`process.nextTick > promise.then > setTimeout > setImmediate`**

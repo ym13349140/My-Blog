@@ -81,3 +81,26 @@ deploy:
   type: git
   repository: https://github.com/ym13349140/ym13349140.github.io.git
   branch: master
+
+#七牛云存储设置
+qiniu:
+  offline: false
+  sync: true
+  bucket: maize-yang-blog
+  # secret_file: sec/qn.json or C:
+  access_key: UdUBpVFuQCRryHQI3-n_lfuFvK_jkONG7oBPN9gZ
+  secret_key: eij7lvxBPpCNxFssfyVWkGooPdZcTO9AeQyMvPI-
+  dirPrefix: static
+  urlPrefix: http://p8c5zr666.bkt.clouddn.com/static
+  up_host: http://upload.qiniu.com
+  local_dir: static
+  update_exist: true
+  image: 
+    folder: images
+    extend: 
+  js:
+    folder: js
+  css:
+    folder: css
+  audio:
+    folder: audio
