@@ -4,9 +4,8 @@ date: 2018-06-05 16:49:30
 tags:
     - JS
     - HTTP
-    - 前端
 categories:
-    - 计网
+    - 计算机网络
 ---
 
 <blockquote class="blockquote-center">酷狗复试的时候被技术面试官问到的一个问题，之前没了解过，事后查看了一些资料有了个大概的了解。</blockquote>
