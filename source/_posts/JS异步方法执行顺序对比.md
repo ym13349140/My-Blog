@@ -22,7 +22,7 @@ categories:
 > 浏览器中, js引擎线程会循环从任务队列中读取事件并且执行, 这种运行机制称作 Event Loop (事件循环).
 
 ## 任务队列介绍(TaskQueue)
-> JS任务队列可以主要有`Macro-TaskQueue/Micro-TaskQueue/Tick-TaskQueue`三种。
+> JS V8引擎的任务队列可以主要有`Macro-TaskQueue/Micro-TaskQueue/Tick-TaskQueue`三种。
 > * `Macro-taskQueue`：相当于JS中的主线程，处理正常顺序的主线程任务，包括`rendering`, `script`(页面脚本), 鼠标, 键盘, 网络请求等事件触发，以及通过 `setTimeout`、 `setInterval` 和 `setImmediate` 添加的任务；
 > * `Micro-TaskQueue`： 相当于JS中的异步任务线程，主要用于保 存`Promise.then` 创建的异步任务;
 > * `Tick-TaskQueue`： 是介于`Macro-TaskQueue` 和 `Micro-TaskQueue` 之间的一个任务队列，主要用于保存`node.js` 中的 `process.nextTick` 异步事件。`node.js` 中有一个_tickCallback函数，在每一次执行完Macro-TaskQueue的一个任务之后被调用，_tickCallback函数主要做了以下两件事：
@@ -35,7 +35,8 @@ categories:
 
 ## 主线程（Macro-queue）执行流程
 > 主线程（Macro-queue）内部又遵循着一定的执行顺序，主要分为6个阶段，具体流程图如下：<br>
-> {% qnimg JS/macro-queue.png title:queue alt:macro-queue示意图 extend:?imageView2/2/w/600 %}
+> {% qnimg JS/macro-queue.png title:macro-queue alt:macro-queue示意图 extend:?imageView2/2/w/600 %}
+> {% qnimg JS/nodejs-event-loop-workflow.png title:nodejs-event-loop-workflow alt:nodejs-event-loop-workflow示意图 extend:?imageView2/2/w/600 %}
 > 1. **Timer**: 事件循环的起始阶段，处理定时器到期之后的 setTimeout 和 setInterval 的回调函数；
 > 2. **I/O callbacks**: 处理除了 setTimeout, setInterval 和 setImmediate 之外的所有回调函数，它没有close callbacks； 
 > 3. **Idle, prepare**: Node 内部使用. 
@@ -51,7 +52,10 @@ categories:
 ## 回调优先级对比
 > **`process.nextTick > promise.then > setTimeout/setInterval/setImmediate`**
 
-*注意：`setImmediate` 每次都添加在`Macro-TaskQueue`的`Check`观察者部分，而`setTimeout`是添加在`Macro-TaskQueue`的`Timer`观察者部分，当二者同时在主线程中出现时，执行顺序不确定（因为`setTimeout`延迟不确定），但是当二者是同时出现在别的异步回调函数当中时，`setImmediate` 会先于 `setTimout` 执行。例如：*
+**注意：**
+1. 关于`setTimeout(fn, 0)`，首先，它的实际值不是0，而是1，每当我们设置一个小于1或大于2147483647ms的任何值的计时器时，它会自动设置为1 表示的是，回调函数fn在主线程最早可得的空闲时间执行，这里只是尽可能的早，具体等待时间不确定，而且第二个参数 0 也并不代表真的是0 ms，HTML5标准规定了setTimeout()的第二个参数的最小值（最短间隔），不得低于4 ms，如果低于这个值，就会自动增加到4 ms；而且setTimeout的延迟是具有很大不确定性的，所以Node引入了setImmediate来实现异步，它不受第二个参数的时间限制，能保证在此轮循环的check阶段一定执行；
+2. 事件循环中的所有计时器程序按照时间阈值升序的方式存储在堆内存中，在每轮循环的timer阶段都会按顺序检测当前计时器序列中的setTimeout回调是否到期，若到期则执行它的回调函数，然后判断下一个计时器，若第一个时间都未到期则停止检查其它定时器，直接进入下一阶段，剩下的定时器则要等等下一轮循环的timer阶段才会继续判断，这也就导致了setTimeout的延迟不一定等于实际设置的第二个参数值；
+3. `setImmediate` 每次都添加在`Macro-TaskQueue`的`Check`阶段部分，而`setTimeout`是添加在`Macro-TaskQueue`的`Timer`阶段部分，当二者同时在主线程中出现时，执行顺序不确定（因为`setTimeout`延迟不确定），但是当二者是同时出现在别的异步回调函数当中时，`setImmediate` 会先于 `setTimout` 执行。例如：*
 
 ```javascript
 // 例一：
