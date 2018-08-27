@@ -33,13 +33,28 @@ categories:
 
 {% qnimg JS/queue.png title:queue alt:queue示意图 extend:?imageView2/2/w/600 %}
 
+## 主线程（Macro-queue）执行流程
+> 主线程（Macro-queue）内部又遵循着一定的执行顺序，主要分为6个阶段，具体流程图如下：<br>
+> {% qnimg JS/macro-queue.png title:queue alt:macro-queue示意图 extend:?imageView2/2/w/600 %}
+> 1. *Timer*: 事件循环的起始阶段，处理定时器到期之后的 setTimeout 和 setInterval 的回调函数；
+> 2. *I/O callbacks*: 处理除了 setTimeout, setInterval 和 setImmediate 之外的所有回调函数，它没有close callbacks； 
+> 3. *Idle, prepare*: Node 内部使用. 
+> 4. *Poll*: 整个事件循环中最重要的阶段，此阶段接受新的传入连接（新的套接字建立等）和数据（文件读取等） 
+>       * 如果watch_queue（连接到轮询阶段的队列）中存在某些内容，它们将一个接一个地同步执行，直到队列为空或达到系统特定的最大限制为止。
+>       * 一旦队列为空，节点将尝试等待新连接等。等待或睡眠的时间取决于各种因素;
+> 5. *Check*: 一个专门用于处理setImmediate()回调的阶段；
+> 6. *Close callbacks*: 这里处理关闭类型的回调（例如：socket.on（'close'，（）=> {}））。更像是一个清理阶段； 
+
+> * *nextTickQueue & microTaskQueue*: nextTickQueue 用于保存 process.nextTick()的回调函数; microTaskQueue 用于保存Promise.then()的回调函数，这两个都不属于主线程事件循环的一部分，在以上六个阶段的任意时刻发现有这两个队列不为空，都会在当前同步程序执行完成之后尽快调用它们。
+
+
 ## 回调优先级对比
-> **`process.nextTick > promise.then > setTimeout > setImmediate`**
+> **`process.nextTick > promise.then > setTimeout/setInterval/setImmediate`**
 
-*注意：`setImmediate` 每次都添加在`Macro-TaskQueue`的队尾*
+*注意：`setImmediate` 每次都添加在`Macro-TaskQueue`的`Check`观察者部分，而`setTimeout`是添加在`Macro-TaskQueue`的`Timer`观察者部分，当二者同时在主线程中出现时，执行顺序不确定（因为`setTimeout`延迟不确定），但是当二者是同时出现在别的异步回调函数当中时，`setImmediate` 会先于 `setTimout` 执行。例如：*
 
-> 当发生在递归调用的时候，setImmediate指定的回调函数，总是排在setTimeout前面，如下：
 ```javascript
+// 例一：
 setImmediate(function () {
     setImmediate(function A() {
         console.log(1);
@@ -52,9 +67,22 @@ setImmediate(function () {
         console.log('TIMEOUT FIRED');
     }, 0);
 });
+// 输出顺序始终如下：
 // 1
 // TIMEOUT FIRED
 // 2
 ```
+```javascript
+// 例二：
+setImmediate(function A() {
+    console.log(1);
+    setImmediate(function B() {
+        console.log(2);
+    });
+});
 
-> 这是因为setImmediate总是将事件注册到下一轮Event Loop，所以函数A和timeout是在同一轮Loop执行，而函数B在下一轮Loop执行。
+setTimeout(function timeout() {
+    console.log('TIMEOUT FIRED');
+}, 0);
+// 1和TIMEOUT FIRED输出顺序不确定，2始终是最后输出的。
+```
