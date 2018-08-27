@@ -36,16 +36,16 @@ categories:
 ## 主线程（Macro-queue）执行流程
 > 主线程（Macro-queue）内部又遵循着一定的执行顺序，主要分为6个阶段，具体流程图如下：<br>
 > {% qnimg JS/macro-queue.png title:queue alt:macro-queue示意图 extend:?imageView2/2/w/600 %}
-> 1. *Timer*: 事件循环的起始阶段，处理定时器到期之后的 setTimeout 和 setInterval 的回调函数；
-> 2. *I/O callbacks*: 处理除了 setTimeout, setInterval 和 setImmediate 之外的所有回调函数，它没有close callbacks； 
-> 3. *Idle, prepare*: Node 内部使用. 
-> 4. *Poll*: 整个事件循环中最重要的阶段，此阶段接受新的传入连接（新的套接字建立等）和数据（文件读取等） 
+> 1. **Timer**: 事件循环的起始阶段，处理定时器到期之后的 setTimeout 和 setInterval 的回调函数；
+> 2. **I/O callbacks**: 处理除了 setTimeout, setInterval 和 setImmediate 之外的所有回调函数，它没有close callbacks； 
+> 3. **Idle, prepare**: Node 内部使用. 
+> 4. **Poll**: 整个事件循环中最重要的阶段，此阶段接受新的传入连接（新的套接字建立等）和数据（文件读取等） 
 >       * 如果watch_queue（连接到轮询阶段的队列）中存在某些内容，它们将一个接一个地同步执行，直到队列为空或达到系统特定的最大限制为止。
 >       * 一旦队列为空，节点将尝试等待新连接等。等待或睡眠的时间取决于各种因素;
-> 5. *Check*: 一个专门用于处理setImmediate()回调的阶段；
-> 6. *Close callbacks*: 这里处理关闭类型的回调（例如：socket.on（'close'，（）=> {}））。更像是一个清理阶段； 
+> 5. **Check**: 一个专门用于处理setImmediate()回调的阶段；
+> 6. **Close callbacks**: 这里处理关闭类型的回调（例如：socket.on（'close'，（）=> {}））。更像是一个清理阶段； 
 
-> * *nextTickQueue & microTaskQueue*: nextTickQueue 用于保存 process.nextTick()的回调函数; microTaskQueue 用于保存Promise.then()的回调函数，这两个都不属于主线程事件循环的一部分，在以上六个阶段的任意时刻发现有这两个队列不为空，都会在当前同步程序执行完成之后尽快调用它们。
+> * **nextTickQueue & microTaskQueue**: nextTickQueue 用于保存 process.nextTick()的回调函数; microTaskQueue 用于保存Promise.then()的回调函数，这两个都不属于主线程事件循环的一部分，在以上六个阶段的任意时刻发现有这两个队列不为空，都会在当前同步程序执行完成之后尽快调用它们。
 
 
 ## 回调优先级对比
