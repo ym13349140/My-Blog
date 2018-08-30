@@ -126,7 +126,7 @@ function myQuickSort(arr, left, right) {
 > 2. 最后剩一个元素，start = end，此时base元素有两种可能：arr[end] <= base 和 arr[end] > base，对于前者，其实与情况一相同，将base元素交换到end位置，然后返回end；对于后者，当 arr[end] > base 时，base元素的位置应该位于 end-1 的位置，所以交换base元素与end-1位置的元素，然后返回end-1 即可。
 
 这两种情况的示意图如下：
-{% qnimg JS/quickSort-if-v2.jpg title:quickSort-if alt:快排判断条件示例图 extend:?imageView2/2/w/550 %}
+{% qnimg JS/quickSort-if-v2.jpg title:quickSort-if alt:快排判断条件示例图 extend:?imageView2/2/w/ %}
 
 ### 基于for循环的快排（quickSort）
 ```JavaScript
