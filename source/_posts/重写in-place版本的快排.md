@@ -23,30 +23,42 @@ function swap(arr, left, right) {
   [arr[left], arr[right]] = [arr[right], arr[left]];
 }
 
+// partition 函数分开版
 function partition(arr, left, right) {
-  let base = arr[Math.floor((left + right) / 2)];
-  let start = left,
-    end = right;
-  while (start < end) {
-    while (arr[start] < base) {
-      start++;
+    let mid = Math.floor(left + ((right - left) >> 1)),
+        base = arr[mid],
+        start = left,
+        end = right;
+    while (start < end) {
+        while (arr[start] <= base) {
+            start++;
+        }
+        while (arr[end] > base) {
+            end--;
+        }
+        if (start < end) {
+            if (start == mid) {
+                mid = end;
+            } else if (end == mid) {
+                mid = start;
+            }
+            swap(arr, start, end);
+            start++;
+            end--;
+        }
     }
-    while (arr[end] > base) {
-      end--;
+    // 这里的判断是关键,最后需要将base元素交换回返回的位置
+    if ((start == end) && (arr[end] > base)) {
+        if (mid != end - 1) {
+            swap(arr, mid, end - 1);
+        }
+        return end - 1;
+    } else {
+        if (mid != end) {
+            swap(arr, mid, end);
+        }
+        return end;
     }
-    if (start < end) {
-      swap(arr, start, end);
-      start++;
-      end--;
-    }
-  }
-  // 这里的判断是关键
-  if (arr[start] > base) {
-    return start - 1
-  } else if (arr[start] < base) {
-    return start + 1
-  }
-  return start
 }
 
 function mysort(arr, left, right) {
@@ -63,12 +75,58 @@ function quickSort(arr) {
     right = arr.length - 1;
   mysort(arr, left, right);
 }
+
+// 单个函数综合版
+function myQuickSort(arr, left, right) {
+    left = left == undefined ? 0 : left;
+    right = right == undefined ? arr.length - 1 : right;
+    let baseIndex = Math.floor(left + ((right - left) >> 1)),
+        base = arr[baseIndex],
+        start = left,
+        end = right;
+    if (left >= right) {
+        return;
+    }
+    while (start < end) {
+        while (arr[start] <= base) {
+            start++;
+        }
+        while (arr[end] > base) {
+            end--;
+        }
+        if (start < end) {
+            if (start == baseIndex) {
+                baseIndex = end;
+            } else if (end == baseIndex) {
+                baseIndex = start;
+            }
+            swap(arr, start, end);
+            start++;
+            end--;
+        }
+    }
+    // 这里的判断是关键
+    if ((start == end) && (arr[end] > base)) {
+        if (baseIndex != end - 1) {
+            swap(arr, baseIndex, end - 1);
+        }
+        baseIndex = end - 1;
+    } else {
+        if (baseIndex != end) {
+            swap(arr, baseIndex, end);
+        }
+        baseIndex = end;
+    }
+    myQuickSort(arr, left, baseIndex - 1);
+    myQuickSort(arr, baseIndex + 1, right);
+}
 ```
 这上面值得注意的就是注释部分的那个判断条件，这是必不可少的，因为当跳出while循环的时候这里存在以下两种情况：
-> 1. start > end，且start=end+1，此时base元素一定位于这两者之间，所以需要判断arr[start]与base元素的大小，若arr[start] > base，那么此时的arr[end]=base，返回start-1（其实也就是end）；若arr[start] = base，那么直接返回start.
-> 2. start = end，此时base元素有三种可能：start左边，start位置或者start右边，所以需要最后这个判断条件来判断最终返回的base元素的位置。
+> 1. 最后剩两个元素，即 start > end，且start=end+1，此时base元素的位置一定位于end处，因为此位置左边的数全部都小于等于 base，所以需要将base元素交换到end位置，然后直接返回end。
+> 2. 最后剩一个元素，start = end，此时base元素有两种可能：arr[end] <= base 和 arr[end] > base，对于前者，其实与情况一相同，将base元素交换到end位置，然后返回end；对于后者，当 arr[end] > base 时，base元素的位置应该位于 end-1 的位置，所以交换base元素与end-1位置的元素，然后返回end-1 即可。
+
 这两种情况的示意图如下：
-{% qnimg JS/quickSort-if.jpg title:quickSort-if alt:快排判断条件示例图 extend:?imageView2/2/w/550 %}
+{% qnimg JS/quickSort-if-v2.jpg title:quickSort-if alt:快排判断条件示例图 extend:?imageView2/2/w/550 %}
 
 ### 基于for循环的快排（quickSort）
 ```JavaScript
